@@ -19,6 +19,10 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
+    private val context: Context = ApplicationProvider.getApplicationContext()
+    private val input = "How do I use Jina ONNX models?"
+
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -29,20 +33,31 @@ class ExampleInstrumentedTest {
     @Test
     fun jinaTest() = runTest {
         // 임베딩에 걸린 총 시간: 44.283593ms
-        val context = ApplicationProvider.getApplicationContext<Context>()
         val jinaEmbedder = JinaEmbedder(context = context)
-        // [Query: How do I use Jina ONNX models?]
-        jinaEmbedder.embed(input = "How do I use Jina ONNX models?", isQuery = true)
+        jinaEmbedder.embed(input = input, isQuery = true)
         jinaEmbedder.close()
     }
-
 
     @Test
     fun gemmaTest() = runTest {
         // 임베딩에 걸린 총 시간: 1318ms
-        val context = ApplicationProvider.getApplicationContext<Context>()
         val gemmaEmbedder: BaseEmbedder = GemmaEmbedder(context = context)
-        val input = "How do I use Jina ONNX models?"
         gemmaEmbedder.embed(input = input, isQuery = true)
+    }
+
+    @Test
+    fun tokenizesInputTextUsingSentencepieceTokenizer() = runTest {
+        val gemmaEmbedder = GemmaEmbedder(context = context)
+        val tokens = gemmaEmbedder.tokenize(text = input)
+        val expected = arrayOf("How", "▁do", "▁I", "▁use", "▁J", "ina", "▁ON", "NX", "▁models", "?")
+        assertEquals(expected.toList(), tokens.toList())
+    }
+
+    @Test
+    fun encodesInputTextToIdUsingSentencepiece() = runTest {
+        val gemmaEmbedder = GemmaEmbedder(context = context)
+        val ids = gemmaEmbedder.encode(text = input)
+        val expected = intArrayOf(3910, 776, 564, 1161, 730, 1630, 8203, 107310, 4681, 236881)
+        assertEquals(expected.toList(), ids.toList())
     }
 }

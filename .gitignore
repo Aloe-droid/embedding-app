@@ -16,3 +16,4 @@ local.properties
 
 app/src/main/assets/embeddinggemma.tflite
 app/src/main/assets/model_merged.onnx
+app/src/main/cpp/sentencepiece/

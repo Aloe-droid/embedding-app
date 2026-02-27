@@ -5,16 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="embeddingTest()">
+      <SelectionState runConfigName="sentencepieceTest()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="encodingTest()">
+      <SelectionState runConfigName="입력 텍스트를 토크나이저로 토큰화한다()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="gemmaTest()">
+      <SelectionState runConfigName="tokenizesInputTextUsingSentencepieceTokenizer()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="jinaTest()">
+      <SelectionState runConfigName="encodesInputTextToTokenIds()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ExampleInstrumentedTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
