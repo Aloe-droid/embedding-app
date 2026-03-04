@@ -1,0 +1,14 @@
+[package]
+name = "myrust"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "myrust"
+crate-type = ["cdylib"]
+
+[package.metadata.android]
+min_sdk_version = 24
+
+[dependencies]
+jni = "0.21"
