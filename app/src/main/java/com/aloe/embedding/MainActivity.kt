@@ -1,6 +1,7 @@
 package com.aloe.embedding
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +17,7 @@ import com.aloe.embedding.ui.theme.EmbeddingTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("RustTest", helloRust())
         enableEdgeToEdge()
         setContent {
             EmbeddingTheme {
@@ -26,6 +28,13 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    external fun helloRust(): String
+    companion object {
+        init {
+            System.loadLibrary("myrust")
         }
     }
 }
