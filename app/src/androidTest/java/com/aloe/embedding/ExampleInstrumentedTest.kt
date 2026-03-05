@@ -48,7 +48,7 @@ class ExampleInstrumentedTest {
     @Test
     fun tokenizesInputTextUsingSentencepieceTokenizer() = runTest {
         val gemmaEmbedder = GemmaEmbedder(context = context)
-        val tokens = gemmaEmbedder.tokenize(text = input)
+        val tokens = gemmaEmbedder.tokenize(input = input)
         val expected = arrayOf("How", "▁do", "▁I", "▁use", "▁J", "ina", "▁ON", "NX", "▁models", "?")
         assertEquals(expected.toList(), tokens.toList())
     }

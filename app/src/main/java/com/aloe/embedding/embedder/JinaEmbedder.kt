@@ -66,6 +66,10 @@ class JinaEmbedder(private val context: Context) : BaseEmbedder() {
         )
     }
 
+    override suspend fun tokenizedInternal(input: String): Array<String> {
+        return tokenizer.tokenize(text = input)
+    }
+
     private fun postprocess(rawResult: OrtSession.Result): FloatArray {
         val rawEmbeddings = (rawResult.get(HIDDEN_STATE).get().value as Array<*>)[0] as Array<*>
         return rawEmbeddings.last() as FloatArray
@@ -76,6 +80,8 @@ class JinaEmbedder(private val context: Context) : BaseEmbedder() {
             .onFailure { it.printStackTrace() }
     }
 
+    override fun getMaxToken(): Int = MAX_TOKEN
+
     companion object {
         private const val ONNX_MODEL = "model_merged.onnx"
         private const val INPUT_NAME = "input_ids"
@@ -83,5 +89,6 @@ class JinaEmbedder(private val context: Context) : BaseEmbedder() {
         private const val HIDDEN_STATE = "last_hidden_state"
         private const val MASK_ACTIVE: Int = 1
         private const val BATCH_SIZE: Long = 1L
+        private const val MAX_TOKEN = 8196
     }
 }

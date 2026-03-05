@@ -49,16 +49,18 @@ class GemmaEmbedder(private val context: Context) : BaseEmbedder() {
         return request
     }
 
-    suspend fun tokenize(text: String): Array<String> {
-        tokenizerReady.await()
-        return nativeTokenize(text)
-    }
-
     suspend fun encode(text: String): IntArray {
         tokenizerReady.await()
         return nativeEncode(text)
     }
 
+    override suspend fun tokenizedInternal(input: String): Array<String> {
+        tokenizerReady.await()
+        return nativeTokenize(text = input)
+    }
+
+    override fun getMaxToken(): Int = MAX_TOKEN
+    
     private external fun loadTokenizerModel(path: String): Boolean
     private external fun nativeTokenize(text: String): Array<String>
     private external fun nativeEncode(text: String): IntArray
@@ -67,5 +69,6 @@ class GemmaEmbedder(private val context: Context) : BaseEmbedder() {
         private const val MODEL_PATH = "embeddinggemma.tflite"
         private const val TOKENIZER_PATH = "sentencepiece.model"
         private const val USE_GPU = false
+        private const val MAX_TOKEN = 512
     }
 }
