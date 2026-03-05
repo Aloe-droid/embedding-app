@@ -6,10 +6,14 @@ import ai.onnxruntime.OrtSession
 import android.content.Context
 import com.aloe.embedding.util.LoadUtil
 import com.llama.tokenizer.Llama3Tokenizer
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import javax.inject.Inject
 
-class JinaEmbedder(private val context: Context) : BaseEmbedder() {
+class JinaEmbedder @Inject constructor(
+    @field:ApplicationContext private val context: Context
+) : BaseEmbedder() {
     private lateinit var ortSession: OrtSession
     private lateinit var ortEnv: OrtEnvironment
     private lateinit var tokenizer: Llama3Tokenizer

@@ -5,10 +5,14 @@ import com.aloe.embedding.util.LoadUtil
 import com.google.ai.edge.localagents.rag.models.EmbedData
 import com.google.ai.edge.localagents.rag.models.EmbeddingRequest
 import com.google.ai.edge.localagents.rag.models.GemmaEmbeddingModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.guava.await
+import javax.inject.Inject
 
-class GemmaEmbedder(private val context: Context) : BaseEmbedder() {
+class GemmaEmbedder @Inject constructor(
+    @field:ApplicationContext private val context: Context
+) : BaseEmbedder() {
     private lateinit var model: GemmaEmbeddingModel
     private val tokenizerReady = CompletableDeferred<Unit>()
 
@@ -60,7 +64,7 @@ class GemmaEmbedder(private val context: Context) : BaseEmbedder() {
     }
 
     override fun getMaxToken(): Int = MAX_TOKEN
-    
+
     private external fun loadTokenizerModel(path: String): Boolean
     private external fun nativeTokenize(text: String): Array<String>
     private external fun nativeEncode(text: String): IntArray
