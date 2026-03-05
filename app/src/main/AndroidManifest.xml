@@ -11,6 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Embedding">
+
+        <provider
+            android:name=".provider.EmbeddingContentProvider"
+            android:authorities="${applicationId}.embedding.provider"
+            android:exported="true"
+            android:initOrder="-1" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
