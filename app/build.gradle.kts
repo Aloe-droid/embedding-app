@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -51,54 +49,6 @@ android {
     buildFeatures {
         compose = true
     }
-}
-
-val localProps = Properties()
-localProps.load(rootProject.file("local.properties").inputStream())
-val sdkDir: String? = localProps.getProperty("sdk.dir")
-val ndkDir = File(sdkDir, "ndk").listFiles()?.firstOrNull()?.absolutePath
-    ?: "$sdkDir/ndk-bundle"
-
-val targets = mapOf(
-    "aarch64-linux-android" to "arm64-v8a",
-    "armv7-linux-androideabi" to "armeabi-v7a",
-    "i686-linux-android" to "x86",
-    "x86_64-linux-android" to "x86_64"
-)
-
-val cargoPath = if (System.getProperty("os.name").lowercase().contains("windows")) {
-    "C:\\Users\\csjun\\.cargo\\bin\\cargo.exe"
-} else {
-    "${System.getProperty("user.home")}/.cargo/bin/cargo"
-}
-
-targets.forEach { (rustTarget, androidAbi) ->
-    tasks.register<Exec>("cargoBuild_${androidAbi}") {
-        workingDir("$rootDir/rust")
-        environment("ANDROID_NDK_HOME", ndkDir)
-        commandLine(
-            cargoPath,
-            "ndk",
-            "-t", rustTarget,
-            "build", "--release"
-        )
-    }
-}
-
-tasks.register("cargoBuildAll") {
-    targets.keys.forEach { dependsOn("cargoBuild_${targets[it]}") }
-    doLast {
-        targets.forEach { (rustTarget, androidAbi) ->
-            val soFile = file("$rootDir/rust/target/$rustTarget/release/libmyrust.so")
-            val destDir = file("$projectDir/src/main/jniLibs/$androidAbi")
-            destDir.mkdirs()
-            soFile.copyTo(file("$destDir/libmyrust.so"), overwrite = true)
-        }
-    }
-}
-
-tasks.named("preBuild") {
-    dependsOn("cargoBuildAll")
 }
 
 dependencies {
