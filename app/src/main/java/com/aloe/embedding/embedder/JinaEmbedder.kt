@@ -5,31 +5,33 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import android.content.Context
 import com.aloe.embedding.util.LoadUtil
+import com.llama.tokenizer.Llama3Tokenizer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 class JinaEmbedder(private val context: Context) : BaseEmbedder() {
     private lateinit var ortSession: OrtSession
     private lateinit var ortEnv: OrtEnvironment
+    private lateinit var tokenizer: Llama3Tokenizer
 
     override suspend fun initInternal() {
         val modelPath = LoadUtil.copyFromAssetsToFilesDir(context = context, fileName = ONNX_MODEL)
         ortEnv = OrtEnvironment.getEnvironment()
         ortSession = ortEnv.createSession(modelPath)
+        tokenizer = Llama3Tokenizer.fromAssets(context = context)
     }
 
     override suspend fun embedInternal(input: String, isQuery: Boolean): FloatArray {
-        val tokenArray = tokenize(input = input, isQuery = isQuery)
-        val onnxInput = preprocess(tokenArray)
-        val output = ortSession.run(onnxInput)
-        return postprocess(output)
+        val tokenArray: IntArray = tokenize(input = input, isQuery = isQuery)
+        val onnxInput: Map<String, OnnxTensor> = preprocess(tokenArray)
+        val output: OrtSession.Result = ortSession.run(onnxInput)
+        return postprocess(rawResult = output)
     }
 
     private fun tokenize(input: String, isQuery: Boolean): IntArray {
         val prefix = if (isQuery) "Query: " else "Document: "
         val prefixedInput = "$prefix$input"
-        // TODO("문자열 -> IntArray 토크나이저 구현 필요")
-        return intArrayOf(2929, 25, 2650, 656, 358, 1005, 622, 2259, 6328, 44404, 4211, 30, 128001)
+        return tokenizer.encode(text = prefixedInput, addSpecialTokens = true).toIntArray()
     }
 
     private fun preprocess(tokenArray: IntArray): Map<String, OnnxTensor> {
